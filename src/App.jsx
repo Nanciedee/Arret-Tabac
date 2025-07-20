@@ -1,0 +1,485 @@
+import React, { useState, useEffect, useRef } from 'react';
+import './style.css';
+import {
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
+} from 'recharts';
+
+const initialUserData = {
+  cigarettesPerDay: 10,
+  cigarettesPerPack: 20,
+  packPrice: 14,
+  quitDate: '',
+  startDate: new Date().toISOString().split('T')[0],
+  triggers: [],
+  isConfigured: false,
+};
+
+const defaultResponses = {
+  'Fumer sans déclencheur': 'Cigarette permise, fais attention !',
+  'le stress': "Prenez une grande inspiration, buvez un verre d'eau.",
+  'une habitude': "Remplacez ce geste automatique par un nouveau rituel.",
+  "l'environnement": "Changez temporairement de lieu ou d'activité.",
+};
+
+const triggersOrder = [
+  'Fumer sans déclencheur',
+  'le stress',
+  'une habitude',
+  "l'environnement"
+];
+
+// Composant Méditation avec démarrage au clic
+const Meditation = () => {
+  const [running, setRunning] = useState(false);
+  const [phase, setPhase] = useState(''); // inspiration, pause, expiration
+  const [timeLeft, setTimeLeft] = useState(0);
+  const timerRef = useRef(null);
+
+  // Durées en secondes
+  const durations = {
+    inspiration: 4,
+    pause: 7,
+    expiration: 8,
+  };
+
+  useEffect(() => {
+    if (!running) {
+      setPhase('');
+      setTimeLeft(0);
+      clearTimeout(timerRef.current);
+      return;
+    }
+
+    const phases = ['inspiration', 'pause', 'expiration'];
+    let phaseIndex = 0;
+
+    const nextPhase = () => {
+      if (phaseIndex >= phases.length) {
+        phaseIndex = 0;
+      }
+      const currentPhase = phases[phaseIndex];
+      setPhase(currentPhase);
+      setTimeLeft(durations[currentPhase]);
+
+      const tick = () => {
+        setTimeLeft(prev => {
+          if (prev <= 1) {
+            phaseIndex++;
+            nextPhase();
+            return 0;
+          }
+          timerRef.current = setTimeout(tick, 1000);
+          return prev - 1;
+        });
+      };
+      timerRef.current = setTimeout(tick, 1000);
+    };
+
+    nextPhase();
+
+    return () => clearTimeout(timerRef.current);
+  }, [running]);
+
+  return (
+    <div className="meditation-box">
+      <h3>🧘 Exercice de respiration</h3>
+      <div
+        className="circle"
+        style={{
+          animationPlayState: running ? 'running' : 'paused',
+          animationName: running ? 'breathCycle' : 'none',
+          animationDuration: '19s',
+          animationIterationCount: 'infinite',
+        }}
+      />
+      {!running ? (
+        <button onClick={() => setRunning(true)}>Démarrer l'exercice</button>
+      ) : (
+        <button onClick={() => setRunning(false)}>Arrêter</button>
+      )}
+      {running && (
+        <p>
+          {phase === 'inspiration' && 'Inspire...'}
+          {phase === 'pause' && 'Retenez...'}
+          {phase === 'expiration' && 'Expire...'}
+          {' '} {timeLeft}s
+        </p>
+      )}
+    </div>
+  );
+};
+
+// Composant Missions journalières
+const Missions = () => {
+  const missionsList = [
+    { id: 'no_smoke_2h', label: "Ne pas fumer 2h" },
+    { id: 'drink_water', label: "Boire de l’eau" },
+    { id: 'walk_5min', label: "Faire 5 min de marche" },
+  ];
+  const [missions, setMissions] = useState(() => {
+    const saved = localStorage.getItem('missions');
+    if (saved) {
+      // reset missions if day changed
+      const { date, data } = JSON.parse(saved);
+      const today = new Date().toISOString().split('T')[0];
+      if (date === today) return data;
+    }
+    return {};
+  });
+
+  useEffect(() => {
+    const today = new Date().toISOString().split('T')[0];
+    localStorage.setItem('missions', JSON.stringify({ date: today, data: missions }));
+  }, [missions]);
+
+  const toggleMission = (id) => {
+    setMissions(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  return (
+    <div className="missions-box">
+      <h3>🎯 Missions journalières</h3>
+      <ul>
+        {missionsList.map(({ id, label }) => (
+          <li key={id}>
+            <label>
+              <input
+                type="checkbox"
+                checked={!!missions[id]}
+                onChange={() => toggleMission(id)}
+              />{' '}
+              {label}
+            </label>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+// Composant graphique consommation
+const ConsumptionChart = ({ logs, cigarettesPerDay }) => {
+  // Regroupe logs par date
+  const grouped = logs.reduce((acc, log) => {
+    const day = log.date.split('T')[0];
+    acc[day] = (acc[day] || 0) + 1;
+    return acc;
+  }, {});
+
+  // Prépare données pour le graphique (les 14 derniers jours)
+  const days = [];
+  const data = [];
+  for (let i = 13; i >= 0; i--) {
+    const day = new Date();
+    day.setDate(day.getDate() - i);
+    const dayStr = day.toISOString().split('T')[0];
+    days.push(dayStr);
+    data.push({
+      date: dayStr,
+      fumées: grouped[dayStr] || 0,
+      evitée: Math.max(0, cigarettesPerDay - (grouped[dayStr] || 0)),
+    });
+  }
+
+  return (
+    <div style={{ width: '100%', height: 250 }}>
+      <h3>📊 Consommation quotidienne (14 jours)</h3>
+      <ResponsiveContainer>
+        <LineChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="date" />
+          <YAxis allowDecimals={false} />
+          <Tooltip />
+          <Legend />
+          <Line type="monotone" dataKey="fumées" stroke="#007bff" activeDot={{ r: 8 }} />
+          <Line type="monotone" dataKey="evitée" stroke="#28a745" />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  );
+};
+
+const App = () => {
+  const [userData, setUserData] = useState(() => {
+    const saved = localStorage.getItem('userData');
+    return saved ? JSON.parse(saved) : initialUserData;
+  });
+
+  const [logs, setLogs] = useState(() => {
+    const saved = localStorage.getItem('logs');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [responses, setResponses] = useState(() => {
+    const saved = localStorage.getItem('responses');
+    return saved ? JSON.parse(saved) : defaultResponses;
+  });
+
+  const [darkMode, setDarkMode] = useState(false);
+  const [craquagesToday, setCraquagesToday] = useState(0);
+
+  useEffect(() => {
+    localStorage.setItem('userData', JSON.stringify(userData));
+  }, [userData]);
+
+  useEffect(() => {
+    localStorage.setItem('logs', JSON.stringify(logs));
+  }, [logs]);
+
+  useEffect(() => {
+    localStorage.setItem('responses', JSON.stringify(responses));
+  }, [responses]);
+
+  // Calcul craquages aujourd'hui
+  useEffect(() => {
+    const today = new Date().toISOString().split('T')[0];
+    const craquagesCount = logs.filter(log => {
+      return (
+        log.trigger === 'craquage' &&
+        log.date.startsWith(today)
+      );
+    }).length;
+    setCraquagesToday(craquagesCount);
+  }, [logs]);
+
+  // Ajoute une fumée avec déclencheur ou "fumer sans déclencheur"
+  const handleSmoke = (trigger) => {
+    if (trigger === 'craquage') {
+      // Si trop de craquages aujourd'hui, ne pas augmenter le plan
+      if (craquagesToday >= 3) {
+        alert("Tu as déjà craqué 3 fois aujourd'hui. Le plan ne va pas être durci aujourd'hui.");
+      }
+    }
+    const entry = { date: new Date().toISOString(), trigger };
+    setLogs(prev => [...prev, entry]);
+  };
+
+  // Calcul intervalle moyen au début (7 premiers jours)
+  const getInitialInterval = () => {
+    // Récupère les logs des 7 premiers jours
+    const sorted = [...logs].sort((a,b) => new Date(a.date) - new Date(b.date));
+    if (sorted.length < 2) return 120; // 2h en minutes par défaut
+
+    // Calcul moyennes intervalles en minutes
+    let intervals = [];
+    for (let i=1; i<sorted.length; i++) {
+      const prevDate = new Date(sorted[i-1].date);
+      const currDate = new Date(sorted[i].date);
+      const diff = (currDate - prevDate) / 60000;
+      intervals.push(diff);
+    }
+    const sum = intervals.reduce((a,b) => a+b, 0);
+    return sum / intervals.length;
+  };
+
+  // Calcul intervalle actuel, en ajoutant +5min par jour depuis le startDate
+  const getCurrentInterval = () => {
+    if (logs.length < 2) return 120;
+    const initial = getInitialInterval();
+    const start = new Date(userData.startDate);
+    const now = new Date();
+    const diffDays = Math.floor((now - start) / (1000 * 60 * 60 * 24));
+    return initial + diffDays * 5;
+  };
+
+  const currentIntervalMin = getCurrentInterval();
+
+  // Temps avant prochaine cigarette autorisée
+  const getNextAllowedSmokeTime = () => {
+    if (logs.length === 0) return 0;
+    const lastSmoke = new Date(logs[logs.length - 1].date);
+    const nextAllowed = new Date(lastSmoke.getTime() + currentIntervalMin * 60000);
+    const now = new Date();
+    const diffMs = nextAllowed - now;
+    return diffMs > 0 ? diffMs : 0;
+  };
+
+  const nextAllowedMs = getNextAllowedSmokeTime();
+
+  // Formatage du temps restant en mm:ss
+  const formatMs = (ms) => {
+    const totalSec = Math.floor(ms / 1000);
+    const min = Math.floor(totalSec / 60);
+    const sec = totalSec % 60;
+    return `${min}m ${sec.toString().padStart(2, '0')}s`;
+  };
+
+  // Regroupe logs par date
+  const groupedLogs = logs.reduce((acc, log) => {
+    const date = log.date.split('T')[0];
+    if (!acc[date]) acc[date] = { count: 0, triggers: [] };
+    acc[date].count++;
+    acc[date].triggers.push(log.trigger);
+    return acc;
+  }, {});
+
+  const handleUpdateConfig = (key, value) => {
+    setUserData(prev => ({ ...prev, [key]: value }));
+  };
+
+  const resetAll = () => {
+    localStorage.clear();
+    window.location.reload();
+  };
+
+  const handleExportCSV = () => {
+    const rows = Object.entries(groupedLogs).map(([date, data]) => {
+      const avoided = Math.max(0, userData.cigarettesPerDay - data.count);
+      const saved = avoided * (userData.packPrice / userData.cigarettesPerPack);
+      return [date, data.count, avoided, saved.toFixed(2), data.triggers.join(';')];
+    });
+    const headers = ['Date', 'Fumées', 'Évitée', 'Économisé ($)', 'Déclencheurs'];
+    const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'statistiques_journalières.csv';
+    link.click();
+  };
+
+  if (!userData.isConfigured) {
+    return (
+      <div className={`app ${darkMode ? 'dark' : ''}`}>
+        <div className="config-box centered">
+          <h2>🎯 Configuration Initiale</h2>
+          <label>
+            Nombre moyen de cigarettes par jour
+            <input
+              type="number"
+              defaultValue={userData.cigarettesPerDay}
+              onChange={(e) => handleUpdateConfig('cigarettesPerDay', parseInt(e.target.value))}
+            />
+          </label>
+          <label>
+            Prix moyen d’un paquet (en $)
+            <input
+              type="number"
+              defaultValue={userData.packPrice}
+              onChange={(e) => handleUpdateConfig('packPrice', parseFloat(e.target.value))}
+            />
+          </label>
+          <label>
+            Nombre de cigarettes par paquet
+            <input
+              type="number"
+              defaultValue={userData.cigarettesPerPack}
+              onChange={(e) => handleUpdateConfig('cigarettesPerPack', parseInt(e.target.value))}
+            />
+          </label>
+          <label>
+            Date cible d’arrêt
+            <input
+              type="date"
+              onChange={(e) => handleUpdateConfig('quitDate', e.target.value)}
+            />
+          </label>
+          <div className="actions">
+            <button onClick={() => handleUpdateConfig('isConfigured', true)}>✅ Valider</button>
+            <button onClick={() => setDarkMode(!darkMode)}>
+              {darkMode ? '☀️ Mode Clair' : '🌙 Mode Sombre'}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`app ${darkMode ? 'dark' : ''}`}>
+      <div className="container centered">
+        <header>
+          <h1>🚭 Journal de Sevrage</h1>
+          <div className="top-actions">
+            <button onClick={resetAll}>🔄 Réinitialiser</button>
+            <button onClick={() => setDarkMode(!darkMode)}>
+              {darkMode ? '☀️ Mode Clair' : '🌙 Mode Sombre'}
+            </button>
+          </div>
+        </header>
+
+        <section className="trigger-buttons">
+          <h2>Déclencheurs</h2>
+          <button
+            onClick={() => handleSmoke('craquage')}
+            style={{ backgroundColor: '#dc3545', marginBottom: '12px', fontWeight: 'bold' }}
+          >
+            ❗ J’ai craqué ({craquagesToday})
+          </button>
+          {triggersOrder.map(trigger => (
+            <button
+              key={trigger}
+              onClick={() => handleSmoke(trigger)}
+              disabled={!responses[trigger]}
+            >
+              🚬 {trigger}
+            </button>
+          ))}
+        </section>
+
+        <section className="dashboard">
+          <h2>📈 Tableau de bord</h2>
+          <p>Temps avant prochaine cigarette : <strong>{nextAllowedMs > 0 ? formatMs(nextAllowedMs) : 'Autorisé maintenant'}</strong></p>
+          <p>Jours avant date d'arrêt : <strong>{userData.quitDate ? Math.max(0, Math.floor((new Date(userData.quitDate) - new Date())/(1000*60*60*24))) : 'Non défini'}</strong></p>
+          <p>Cigarettes fumées aujourd'hui : <strong>{groupedLogs[new Date().toISOString().split('T')[0]]?.count || 0}</strong></p>
+          <p>Craquages aujourd'hui : <strong>{craquagesToday}</strong></p>
+          <p>Intervalle actuel entre cigarettes : <strong>{currentIntervalMin.toFixed(2)} min</strong></p>
+        </section>
+
+        <Meditation />
+        <Missions />
+        <ConsumptionChart logs={logs} cigarettesPerDay={userData.cigarettesPerDay} />
+
+        <section className="daily-stats">
+          <div className="export-header">
+            <h2>📅 Statistiques Journalières</h2>
+            <button onClick={handleExportCSV}>📤 Exporter CSV</button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Fumées</th>
+                <th>Évitée</th>
+                <th>Économisé ($)</th>
+                <th>Déclencheurs</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.entries(groupedLogs).map(([date, { count, triggers }]) => {
+                const avoided = Math.max(0, userData.cigarettesPerDay - count);
+                const saved = avoided * (userData.packPrice / userData.cigarettesPerPack);
+                return (
+                  <tr key={date}>
+                    <td>{date}</td>
+                    <td>{count}</td>
+                    <td>{avoided}</td>
+                    <td>{saved.toFixed(2)}</td>
+                    <td>{triggers.join(', ')}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </section>
+
+        <section className="admin-panel">
+          <h2>🛠️ Réponses Personnalisées</h2>
+          {Object.entries(responses).map(([trigger, message], index) => (
+            <div key={index}>
+              <label>{trigger}
+                <input
+                  value={message}
+                  onChange={(e) =>
+                    setResponses(prev => ({ ...prev, [trigger]: e.target.value }))
+                  }
+                />
+              </label>
+            </div>
+          ))}
+        </section>
+      </div>
+    </div>
+  );
+};
+
+export default App;
