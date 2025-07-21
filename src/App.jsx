@@ -16,9 +16,9 @@ const initialUserData = {
 
 const defaultResponses = {
   'Fumer sans déclencheur': 'Cigarette permise, fais attention !',
-  'le stress': "Prenez une grande inspiration, buvez un verre d'eau.",
-  'une habitude': "Remplacez ce geste automatique par un nouveau rituel.",
-  "l'environnement": "Changez temporairement de lieu ou d'activité.",
+  'Stress': "Prenez une grande inspiration, buvez un verre d'eau.",
+  'Habitude': "Remplacez ce geste automatique par un nouveau rituel.",
+  "Environnement": "Changez temporairement de lieu ou d'activité.",
 };
 
 const triggersOrder = [
@@ -28,19 +28,14 @@ const triggersOrder = [
   "l'environnement"
 ];
 
-// Composant Méditation avec démarrage au clic
+// Méditation animée (respiration guidée)
 const Meditation = () => {
   const [running, setRunning] = useState(false);
-  const [phase, setPhase] = useState(''); // inspiration, pause, expiration
+  const [phase, setPhase] = useState('');
   const [timeLeft, setTimeLeft] = useState(0);
   const timerRef = useRef(null);
 
-  // Durées en secondes
-  const durations = {
-    inspiration: 4,
-    pause: 7,
-    expiration: 8,
-  };
+  const durations = { inspiration: 4, pause: 7, expiration: 8 };
 
   useEffect(() => {
     if (!running) {
@@ -54,9 +49,7 @@ const Meditation = () => {
     let phaseIndex = 0;
 
     const nextPhase = () => {
-      if (phaseIndex >= phases.length) {
-        phaseIndex = 0;
-      }
+      if (phaseIndex >= phases.length) phaseIndex = 0;
       const currentPhase = phases[phaseIndex];
       setPhase(currentPhase);
       setTimeLeft(durations[currentPhase]);
@@ -109,7 +102,7 @@ const Meditation = () => {
   );
 };
 
-// Composant Missions journalières
+// Missions journalières avec sauvegarde par date
 const Missions = () => {
   const missionsList = [
     { id: 'no_smoke_2h', label: "Ne pas fumer 2h" },
@@ -119,7 +112,6 @@ const Missions = () => {
   const [missions, setMissions] = useState(() => {
     const saved = localStorage.getItem('missions');
     if (saved) {
-      // reset missions if day changed
       const { date, data } = JSON.parse(saved);
       const today = new Date().toISOString().split('T')[0];
       if (date === today) return data;
@@ -157,23 +149,19 @@ const Missions = () => {
   );
 };
 
-// Composant graphique consommation
+// Graphique consommation (fumées vs évitées)
 const ConsumptionChart = ({ logs, cigarettesPerDay }) => {
-  // Regroupe logs par date
   const grouped = logs.reduce((acc, log) => {
     const day = log.date.split('T')[0];
     acc[day] = (acc[day] || 0) + 1;
     return acc;
   }, {});
 
-  // Prépare données pour le graphique (les 14 derniers jours)
-  const days = [];
   const data = [];
   for (let i = 13; i >= 0; i--) {
     const day = new Date();
     day.setDate(day.getDate() - i);
     const dayStr = day.toISOString().split('T')[0];
-    days.push(dayStr);
     data.push({
       date: dayStr,
       fumées: grouped[dayStr] || 0,
@@ -200,91 +188,79 @@ const ConsumptionChart = ({ logs, cigarettesPerDay }) => {
 };
 
 const App = () => {
+  // États principaux
   const [userData, setUserData] = useState(() => {
     const saved = localStorage.getItem('userData');
     return saved ? JSON.parse(saved) : initialUserData;
   });
-
   const [logs, setLogs] = useState(() => {
     const saved = localStorage.getItem('logs');
     return saved ? JSON.parse(saved) : [];
   });
-
   const [responses, setResponses] = useState(() => {
     const saved = localStorage.getItem('responses');
     return saved ? JSON.parse(saved) : defaultResponses;
   });
-
   const [darkMode, setDarkMode] = useState(false);
   const [craquagesToday, setCraquagesToday] = useState(0);
+  const [shareFeedback, setShareFeedback] = useState('');
 
+  // Sauvegarde userData, logs, responses dans localStorage
   useEffect(() => {
     localStorage.setItem('userData', JSON.stringify(userData));
   }, [userData]);
-
   useEffect(() => {
     localStorage.setItem('logs', JSON.stringify(logs));
   }, [logs]);
-
   useEffect(() => {
     localStorage.setItem('responses', JSON.stringify(responses));
   }, [responses]);
 
-  // Calcul craquages aujourd'hui
+  // Calcul craquages aujourd'hui (trigger === 'craquage' + date du jour)
   useEffect(() => {
     const today = new Date().toISOString().split('T')[0];
-    const craquagesCount = logs.filter(log => {
-      return (
-        log.trigger === 'craquage' &&
-        log.date.startsWith(today)
-      );
-    }).length;
-    setCraquagesToday(craquagesCount);
+    const count = logs.filter(log => log.trigger === 'craquage' && log.date.startsWith(today)).length;
+    setCraquagesToday(count);
   }, [logs]);
 
-  // Ajoute une fumée avec déclencheur ou "fumer sans déclencheur"
+  // Ajouter une fumée avec déclencheur
   const handleSmoke = (trigger) => {
-    if (trigger === 'craquage') {
-      // Si trop de craquages aujourd'hui, ne pas augmenter le plan
-      if (craquagesToday >= 3) {
-        alert("Tu as déjà craqué 3 fois aujourd'hui. Le plan ne va pas être durci aujourd'hui.");
-      }
+    if (trigger === 'craquage' && craquagesToday >= 3) {
+      alert("Tu as déjà craqué 3 fois aujourd'hui. Le plan ne va pas être durci aujourd'hui.");
+      return;
     }
     const entry = { date: new Date().toISOString(), trigger };
     setLogs(prev => [...prev, entry]);
   };
 
-  // Calcul intervalle moyen au début (7 premiers jours)
+  // Calcul intervalle initial moyen (minutes) entre fumées premiers jours
   const getInitialInterval = () => {
-    // Récupère les logs des 7 premiers jours
     const sorted = [...logs].sort((a,b) => new Date(a.date) - new Date(b.date));
-    if (sorted.length < 2) return 120; // 2h en minutes par défaut
+    if (sorted.length < 2) return 120; // 2h par défaut
 
-    // Calcul moyennes intervalles en minutes
-    let intervals = [];
-    for (let i=1; i<sorted.length; i++) {
+    const intervals = [];
+    for (let i = 1; i < sorted.length; i++) {
       const prevDate = new Date(sorted[i-1].date);
       const currDate = new Date(sorted[i].date);
-      const diff = (currDate - prevDate) / 60000;
-      intervals.push(diff);
+      intervals.push((currDate - prevDate) / 60000);
     }
     const sum = intervals.reduce((a,b) => a+b, 0);
     return sum / intervals.length;
   };
 
-  // Calcul intervalle actuel, en ajoutant +5min par jour depuis le startDate
+  // Intervalle actuel = initial + 5min * jours depuis startDate
   const getCurrentInterval = () => {
     if (logs.length < 2) return 120;
     const initial = getInitialInterval();
     const start = new Date(userData.startDate);
     const now = new Date();
-    const diffDays = Math.floor((now - start) / (1000 * 60 * 60 * 24));
+    const diffDays = Math.floor((now - start) / (1000*60*60*24));
     return initial + diffDays * 5;
   };
 
   const currentIntervalMin = getCurrentInterval();
 
-  // Temps avant prochaine cigarette autorisée
+  // Temps avant prochaine cigarette autorisée (en ms)
   const getNextAllowedSmokeTime = () => {
     if (logs.length === 0) return 0;
     const lastSmoke = new Date(logs[logs.length - 1].date);
@@ -296,7 +272,7 @@ const App = () => {
 
   const nextAllowedMs = getNextAllowedSmokeTime();
 
-  // Formatage du temps restant en mm:ss
+  // Format mm:ss pour affichage temps
   const formatMs = (ms) => {
     const totalSec = Math.floor(ms / 1000);
     const min = Math.floor(totalSec / 60);
@@ -304,7 +280,7 @@ const App = () => {
     return `${min}m ${sec.toString().padStart(2, '0')}s`;
   };
 
-  // Regroupe logs par date
+  // Group logs par date (pour stats)
   const groupedLogs = logs.reduce((acc, log) => {
     const date = log.date.split('T')[0];
     if (!acc[date]) acc[date] = { count: 0, triggers: [] };
@@ -313,15 +289,18 @@ const App = () => {
     return acc;
   }, {});
 
+  // Mise à jour configuration utilisateur
   const handleUpdateConfig = (key, value) => {
     setUserData(prev => ({ ...prev, [key]: value }));
   };
 
+  // Reset total (localStorage + reload)
   const resetAll = () => {
     localStorage.clear();
     window.location.reload();
   };
 
+  // Export CSV des stats journalières
   const handleExportCSV = () => {
     const rows = Object.entries(groupedLogs).map(([date, data]) => {
       const avoided = Math.max(0, userData.cigarettesPerDay - data.count);
@@ -335,6 +314,20 @@ const App = () => {
     link.href = URL.createObjectURL(blob);
     link.download = 'statistiques_journalières.csv';
     link.click();
+  };
+
+  // Partage simple : copie lien dans presse-papier
+  const handleShare = () => {
+    if (!navigator.clipboard) {
+      alert("La copie dans le presse-papier n'est pas supportée.");
+      return;
+    }
+    navigator.clipboard.writeText(window.location.href)
+      .then(() => {
+        setShareFeedback('Lien copié dans le presse-papier !');
+        setTimeout(() => setShareFeedback(''), 3000);
+      })
+      .catch(() => alert("Échec de la copie dans le presse-papier."));
   };
 
   if (!userData.isConfigured) {
@@ -431,9 +424,14 @@ const App = () => {
 
         <section className="daily-stats">
           <div className="export-header">
-            <h2>📅 Statistiques Journalières</h2>
-            <button onClick={handleExportCSV}>📤 Exporter CSV</button>
+            <h2>📊 Statistiques Journalières</h2>
+            <button onClick={handleExportCSV}>📁 Exporter CSV</button>
+            <button onClick={handleShare} className="share-button">
+              📤 Partager cette application
+            </button>
+            {shareFeedback && <span className="share-feedback">{shareFeedback}</span>}
           </div>
+
           <table>
             <thead>
               <tr>
@@ -466,7 +464,8 @@ const App = () => {
           <h2>🛠️ Réponses Personnalisées</h2>
           {Object.entries(responses).map(([trigger, message], index) => (
             <div key={index}>
-              <label>{trigger}
+              <label>
+                {trigger}
                 <input
                   value={message}
                   onChange={(e) =>
