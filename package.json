@@ -2,6 +2,7 @@
   "name": "arret-tabac-app",
   "version": "1.0.0",
   "description": "Journal de sevrage du tabac",
+  "homepage": "https://nanciedee.github.io/Arret-Tabac/",
   "main": "index.js",
   "scripts": {
     "dev": "vite",
