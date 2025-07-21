@@ -24,6 +24,18 @@ body {
   padding: 20px;
 }
 
+/* === Application entière === */
+.app {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.dark {
+  background-color: #111;
+  color: #f9f9f9;
+}
+
 /* === Conteneur principal === */
 .app {
   width: 100%;
