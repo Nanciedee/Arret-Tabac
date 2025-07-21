@@ -5,6 +5,14 @@
   padding: 0;
 }
 
+
+/* === Paramètres globaux === */
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
 body {
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;
@@ -23,11 +31,14 @@ body {
 }
 
 .container {
-  background: white;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: white;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.97); /* Couleur légère, modifiable */
 }
 
 .centered {
