@@ -48,27 +48,34 @@ const Meditation = () => {
     const phases = ['inspiration', 'pause', 'expiration'];
     let phaseIndex = 0;
 
-    const nextPhase = () => {
-      if (phaseIndex >= phases.length) phaseIndex = 0;
+    const startNextPhase = () => {
+      clearTimeout(timerRef.current); // Annule le décompte précédent
+      
       const currentPhase = phases[phaseIndex];
       setPhase(currentPhase);
-      setTimeLeft(durations[currentPhase]);
+      let duration = durations[currentPhase];
+      setTimeLeft(duration);
 
       const tick = () => {
-        setTimeLeft(prev => {
-          if (prev <= 1) {
-            phaseIndex++;
-            nextPhase();
-            return 0;
-          }
+        duration--;
+        setTimeLeft(duration);
+        if (duration <= 0) {
+          phaseIndex = (phaseIndex + 1) % phases.length;
+          startNextPhase();
+        } else {
           timerRef.current = setTimeout(tick, 1000);
-          return prev - 1;
-        });
+        }
       };
-      timerRef.current = setTimeout(tick, 1000);
+
+      if (duration > 0) {
+        timerRef.current = setTimeout(tick, 1000);
+      } else {
+        phaseIndex = (phaseIndex + 1) % phases.length;
+        startNextPhase();
+      }
     };
 
-    nextPhase();
+    startNextPhase();
 
     return () => clearTimeout(timerRef.current);
   }, [running]);
@@ -79,9 +86,9 @@ const Meditation = () => {
       <div
         className="circle"
         style={{
+          animationName: running && phase === 'inspiration' ? 'breathe-in' : (running && phase === 'expiration' ? 'breathe-out' : 'none'),
+          animationDuration: `${durations[phase]}s`,
           animationPlayState: running ? 'running' : 'paused',
-          animationName: running ? 'breathCycle' : 'none',
-          animationDuration: '19s',
           animationIterationCount: 'infinite',
         }}
       />
