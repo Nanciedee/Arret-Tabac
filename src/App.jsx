@@ -81,13 +81,13 @@ const Meditation = () => {
   }, [running]);
 
   return (
-    <div className="meditation-box">
+    <div className="meditation-box"> {/* Le div parent est de retour */}
       <h3>🧘 Exercice de respiration</h3>
       <div
         className="circle"
         style={{
-          animationName: running && phase === 'inspiration' ? 'breathe-in' : (running && phase === 'expiration' ? 'breathe-out' : 'none'),
-          animationDuration: `${durations[phase]}s`,
+          animationName: running ? 'breathCycle' : 'none',
+          animationDuration: '19s',
           animationPlayState: running ? 'running' : 'paused',
           animationIterationCount: 'infinite',
         }}

@@ -220,17 +220,17 @@ header {
 }
 
 @keyframes breathCycle {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.5;
+  0% {
+    transform: scale(1); /* Début (expiration) */
   }
-  40% {
-    transform: scale(1.3);
-    opacity: 1;
+  21% { /* 4s d'inspiration / 19s total = ~21% */
+    transform: scale(2); /* Fin de l'inspiration */
   }
-  70% {
-    transform: scale(0.7);
-    opacity: 0.3;
+  58% { /* + 7s de pause / 19s total = ~37% + 21% = ~58% */
+    transform: scale(2); /* Fin de la pause */
+  }
+  100% { /* + 8s d'expiration / 19s total = ~42% + 58% = ~100% */
+    transform: scale(1); /* Fin de l'expiration */
   }
 }
 
