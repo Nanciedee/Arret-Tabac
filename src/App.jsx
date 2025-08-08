@@ -282,9 +282,10 @@ const App = () => {
   // Format mm:ss pour affichage temps
   const formatMs = (ms) => {
     const totalSec = Math.floor(ms / 1000);
-    const min = Math.floor(totalSec / 60);
-    const sec = totalSec % 60;
-    return `${min}m ${sec.toString().padStart(2, '0')}s`;
+    const hours = Math.floor(totalSec / 3600);
+    const minutes = Math.floor((totalSec % 3600) / 60);
+    const seconds = totalSec % 60;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
   };
 
   // Group logs par date (pour stats)
