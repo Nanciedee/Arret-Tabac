@@ -423,7 +423,8 @@ const formatMs = (ms) => {
           <p>Jours avant date d'arrêt : <strong>{userData.quitDate ? Math.max(0, Math.floor((new Date(userData.quitDate) - new Date())/(1000*60*60*24))) : 'Non défini'}</strong></p>
           <p>Cigarettes fumées aujourd'hui : <strong>{groupedLogs[new Date().toISOString().split('T')[0]]?.count || 0}</strong></p>
           <p>Craquages aujourd'hui : <strong>{craquagesToday}</strong></p>
-          <p>Intervalle actuel entre cigarettes : <strong>{currentIntervalMin.toFixed(2)} min</strong></p>
+          {/* C'EST ICI QUE LE CHANGEMENT DOIT ETRE FAIT */}
+          <p>Intervalle actuel entre cigarettes : <strong>{formatMs(currentIntervalMin * 60000)}</strong></p>
         </section>
 
         <Meditation />
