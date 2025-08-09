@@ -241,52 +241,52 @@ const App = () => {
   };
 
   // Calcul intervalle initial moyen (minutes) entre fumées premiers jours
-  const getInitialInterval = () => {
-    const sorted = [...logs].sort((a,b) => new Date(a.date) - new Date(b.date));
-    if (sorted.length < 2) return 120; // 2h par défaut
+const getInitialInterval = () => {
+  const sorted = [...logs].sort((a,b) => new Date(a.date) - new Date(b.date));
+  if (sorted.length < 2) return 120; // 2h par défaut
 
-    const intervals = [];
-    for (let i = 1; i < sorted.length; i++) {
-      const prevDate = new Date(sorted[i-1].date);
-      const currDate = new Date(sorted[i].date);
-      intervals.push((currDate - prevDate) / 60000);
-    }
-    const sum = intervals.reduce((a,b) => a+b, 0);
-    return sum / intervals.length;
-  };
+  const intervals = [];
+  for (let i = 1; i < sorted.length; i++) {
+    const prevDate = new Date(sorted[i-1].date);
+    const currDate = new Date(sorted[i].date);
+    intervals.push((currDate - prevDate) / 60000);
+  }
+  const sum = intervals.reduce((a,b) => a+b, 0);
+  return sum / intervals.length;
+};
 
-  // Intervalle actuel = initial + 5min * jours depuis startDate
-  const getCurrentInterval = () => {
-    if (logs.length < 2) return 120;
-    const initial = getInitialInterval();
-    const start = new Date(userData.startDate);
-    const now = new Date();
-    const diffDays = Math.floor((now - start) / (1000*60*60*24));
-    return initial + diffDays * 5;
-  };
+// Intervalle actuel = initial + 5min * jours depuis startDate
+const getCurrentInterval = () => {
+  if (logs.length < 2) return 120;
+  const initial = getInitialInterval();
+  const start = new Date(userData.startDate);
+  const now = new Date();
+  const diffDays = Math.floor((now - start) / (1000*60*60*24));
+  return initial + diffDays * 5;
+};
 
-  const currentIntervalMin = getCurrentInterval();
+const currentIntervalMin = getCurrentInterval();
 
-  // Temps avant prochaine cigarette autorisée (en ms)
-  const getNextAllowedSmokeTime = () => {
-    if (logs.length === 0) return 0;
-    const lastSmoke = new Date(logs[logs.length - 1].date);
-    const nextAllowed = new Date(lastSmoke.getTime() + currentIntervalMin * 60000);
-    const now = new Date();
-    const diffMs = nextAllowed - now;
-    return diffMs > 0 ? diffMs : 0;
-  };
+// Temps avant prochaine cigarette autorisée (en ms)
+const getNextAllowedSmokeTime = () => {
+  if (logs.length === 0) return 0;
+  const lastSmoke = new Date(logs[logs.length - 1].date);
+  const nextAllowed = new Date(lastSmoke.getTime() + currentIntervalMin * 60000);
+  const now = new Date();
+  const diffMs = nextAllowed - now;
+  return diffMs > 0 ? diffMs : 0;
+};
 
-  const nextAllowedMs = getNextAllowedSmokeTime();
+const nextAllowedMs = getNextAllowedSmokeTime();
 
-  // Format mm:ss pour affichage temps
-  const formatMs = (ms) => {
-    const totalSec = Math.floor(ms / 1000);
-    const hours = Math.floor(totalSec / 3600);
-    const minutes = Math.floor((totalSec % 3600) / 60);
-    const seconds = totalSec % 60;
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-  };
+// Format hh:mm pour affichage temps (heures et minutes)
+const formatMs = (ms) => {
+  const totalSec = Math.floor(ms / 1000);
+  const hours = Math.floor(totalSec / 3600);
+  const minutes = Math.floor((totalSec % 3600) / 60);
+  // Les secondes sont ignorées dans le retour final pour n'afficher que hh:mm
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+};
 
   // Group logs par date (pour stats)
   const groupedLogs = logs.reduce((acc, log) => {
