@@ -16,7 +16,7 @@ html, body {
 body {
   font-family: Arial, sans-serif;
   background-color: #f7f2ec;
-  color: #222;
+  color: #33302b;
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -32,7 +32,7 @@ body {
 }
 
 .dark {
-  background-color: #111;
+  background-color: #171412;
   color: #f9f9f9;
 }
 
@@ -46,11 +46,11 @@ body {
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
-  background-color: white;
+  background-color: #fffdf9;
   padding: 1rem;
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  background-color: rgba(255, 255, 255, 0.97); /* Couleur légère, modifiable */
+  box-shadow: 0 2px 8px rgba(51, 48, 43, 0.1);
+  background-color: rgba(255, 253, 249, 0.97);
 }
 
 .centered {
@@ -73,23 +73,23 @@ header {
   border-radius: 6px;
   border: none;
   cursor: pointer;
-  background-color: #007bff;
+  background-color: #b96a4b;
   color: white;
   transition: background-color 0.3s ease;
 }
 
 .top-actions button:hover {
-  background-color: #0056b3;
+  background-color: #a2543a;
 }
 
 /* === Config box === */
 .config-box {
-  background: white;
+  background: #fffdf9;
   padding: 30px;
   border-radius: 12px;
   max-width: 600px;
   width: 90%;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(51, 48, 43, 0.15);
   margin: 40px auto;
 }
 
@@ -107,12 +107,12 @@ header {
   margin-top: 5px;
   font-size: 1rem;
   border-radius: 6px;
-  border: 1px solid #ccc;
+  border: 1px solid #e0d3c6;
   transition: border-color 0.2s ease;
 }
 
 .config-box input:focus {
-  border-color: #007bff;
+  border-color: #b96a4b;
   outline: none;
 }
 
@@ -135,13 +135,13 @@ header {
 
 .actions button[type="submit"],
 .actions button {
-  background-color: #007bff;
+  background-color: #b96a4b;
   color: white;
 }
 
 .actions button[type="submit"]:hover,
 .actions button:hover {
-  background-color: #0056b3;
+  background-color: #a2543a;
 }
 
 /* === Boutons Déclencheurs === */
@@ -158,7 +158,7 @@ header {
   padding: 10px 14px;
   border-radius: 6px;
   border: none;
-  background-color: #007bff;
+  background-color: #b96a4b;
   color: white;
   font-weight: 600;
   cursor: pointer;
@@ -166,17 +166,17 @@ header {
 }
 
 .trigger-buttons button:hover:not(:disabled) {
-  background-color: #0056b3;
+  background-color: #a2543a;
 }
 
 .trigger-buttons button:disabled {
-  background-color: #cccccc;
+  background-color: #d8cfc4;
   cursor: not-allowed;
 }
 
 /* Bouton J'ai craqué */
 .trigger-buttons button[style] {
-  background-color: #dc3545 !important;
+  background-color: #b3543f !important;
   font-weight: bold;
   margin-bottom: 12px;
 }
@@ -186,8 +186,8 @@ header {
   margin-bottom: 40px;
   padding: 20px;
   border-radius: 12px;
-  background-color: #e9f1ff;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  background-color: #f3e7db;
+  box-shadow: 0 2px 6px rgba(51, 48, 43, 0.1);
 }
 
 .dashboard p {
@@ -197,12 +197,12 @@ header {
 
 /* === Méditation === */
 .meditation-box {
-  background-color: #f0f8ff;
+  background-color: #f7ede2;
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 30px;
   text-align: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(51, 48, 43, 0.1);
 }
 
 .meditation-box h3 {
@@ -214,23 +214,23 @@ header {
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background-color: #007bff;
+  background-color: #b96a4b;
   opacity: 0.5;
   animation-timing-function: ease-in-out;
 }
 
 @keyframes breathCycle {
   0% {
-    transform: scale(1); /* Début (expiration) */
+    transform: scale(1);
   }
-  21% { /* 4s d'inspiration / 19s total = ~21% */
-    transform: scale(2); /* Fin de l'inspiration */
+  21% {
+    transform: scale(2);
   }
-  58% { /* + 7s de pause / 19s total = ~37% + 21% = ~58% */
-    transform: scale(2); /* Fin de la pause */
+  58% {
+    transform: scale(2);
   }
-  100% { /* + 8s d'expiration / 19s total = ~42% + 58% = ~100% */
-    transform: scale(1); /* Fin de l'expiration */
+  100% {
+    transform: scale(1);
   }
 }
 
@@ -238,7 +238,7 @@ header {
   padding: 10px 20px;
   border-radius: 8px;
   border: none;
-  background-color: #007bff;
+  background-color: #b96a4b;
   color: white;
   font-weight: 700;
   cursor: pointer;
@@ -246,7 +246,7 @@ header {
 }
 
 .meditation-box button:hover {
-  background-color: #0056b3;
+  background-color: #a2543a;
 }
 
 .meditation-box p {
@@ -257,11 +257,11 @@ header {
 
 /* === Missions journalières === */
 .missions-box {
-  background-color: #e8f5e9;
+  background-color: #eef3e8;
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 30px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(51, 48, 43, 0.1);
 }
 
 .missions-box h3 {
@@ -307,13 +307,13 @@ header {
   border-radius: 6px;
   border: none;
   cursor: pointer;
-  background-color: #28a745;
+  background-color: #7f9b7a;
   color: white;
   transition: background-color 0.3s ease;
 }
 
 .export-header button:hover {
-  background-color: #1e7e34;
+  background-color: #6b8467;
 }
 
 .daily-stats table {
@@ -323,19 +323,19 @@ header {
 }
 
 .daily-stats th, .daily-stats td {
-  border: 1px solid #ddd;
+  border: 1px solid #e6dbcf;
   padding: 8px 12px;
   text-align: center;
 }
 
 .daily-stats th {
-  background-color: #007bff;
+  background-color: #7f9b7a;
   color: white;
   font-weight: 700;
 }
 
 .daily-stats tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
+  background-color: #fbf7f1;
 }
 
 .trigger-response {
@@ -346,7 +346,7 @@ header {
   padding: 12px 16px;
   font-size: 1.05rem;
   line-height: 1.6;
-  background-color: #e9f1ff;
+  background-color: #f3e7db;
   border-radius: 6px;
   margin-top: 10px;
 }
@@ -354,10 +354,10 @@ header {
 /* === Admin panel === */
 .admin-panel {
   margin-top: 40px;
-  background-color: #fff3cd;
+  background-color: #f8eede;
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(51, 48, 43, 0.1);
 }
 
 .admin-panel h2 {
@@ -374,31 +374,31 @@ header {
   width: 100%;
   padding: 8px 12px;
   border-radius: 6px;
-  border: 1px solid #ccc;
+  border: 1px solid #e0d3c6;
   font-size: 1rem;
 }
 
 /* === Thème sombre === */
 .dark body {
-  background-color: #121212;
+  background-color: #171412;
   color: #f0f0f0;
 }
 
 .dark .container {
-  background-color: #1e1e1e;
+  background-color: #221e1a;
   color: #f0f0f0;
 }
 
 .dark input,
 .dark textarea {
-  background-color: #2c2c2c;
+  background-color: #262220;
   color: #f0f0f0;
-  border-color: #555;
+  border-color: #3b332c;
 }
 
 .dark input:focus,
 .dark textarea:focus {
-  border-color: #ffcc00;
+  border-color: #b96a4b;
   outline: none;
 }
 
@@ -407,58 +407,58 @@ header {
 }
 
 .dark .top-actions button {
-  background-color: #2196f3;
+  background-color: #b96a4b;
 }
 
 .dark .top-actions button:hover {
-  background-color: #1976d2;
+  background-color: #a2543a;
 }
 
 .dark .trigger-buttons button {
-  background-color: #2196f3;
+  background-color: #b96a4b;
 }
 
 .dark .trigger-buttons button:hover:not(:disabled) {
-  background-color: #1976d2;
+  background-color: #a2543a;
 }
 
 .dark .trigger-buttons button[style] {
-  background-color: #dc3545 !important;
+  background-color: #b3543f !important;
 }
 
 .dark .actions button,
 .dark .export-header button {
-  background-color: #28a745;
+  background-color: #7f9b7a;
 }
 
 .dark .actions button:hover,
 .dark .export-header button:hover {
-  background-color: #1e7e34;
+  background-color: #6b8467;
 }
 
 .dark .meditation-box {
-  background-color: #273746;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.7);
+  background-color: #2a241f;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
 }
 
 .dark .missions-box {
-  background-color: #1d3524;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.7);
+  background-color: #252b22;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
 }
 
 .dark .daily-stats th {
-  background-color: #2196f3;
+  background-color: #7f9b7a;
 }
 
 .dark .daily-stats tbody tr:nth-child(even) {
-  background-color: #2c2c2c;
+  background-color: #262220;
 }
 
 /* === Bouton Partage === */
 .share-button {
   margin-top: 0.5rem;
   padding: 0.5rem 1rem;
-  background-color: #4CAF50;
+  background-color: #7f9b7a;
   color: white;
   border: none;
   border-radius: 8px;
@@ -468,7 +468,7 @@ header {
 }
 
 .share-button:hover {
-  background-color: #388e3c;
+  background-color: #6b8467;
 }
 
 /* === Responsive Design === */
@@ -559,192 +559,4 @@ header {
   .dashboard p {
     font-size: 1rem;
   }
-}
-/* === Refonte visuelle douce — sans changement structurel === */
-
-body {
-  font-family: "DM Sans", system-ui, Arial, sans-serif;
-  background-color: #f7f2ec;
-  color: #33302b;
-}
-
-.container,
-.config-box {
-  background-color: #fffdf9;
-  border: 1px solid #e6dbcf;
-  box-shadow: 0 6px 18px rgba(51, 48, 43, 0.07);
-}
-
-h1,
-h2,
-h3 {
-  font-family: "Fraunces", Georgia, serif;
-  color: #33302b;
-}
-
-/* Boutons principaux */
-.top-actions button,
-.actions button,
-.trigger-buttons button,
-.meditation-box button {
-  background-color: #b96a4b;
-  border-radius: 999px;
-  transition: background-color 0.2s ease, transform 0.15s ease;
-}
-
-.top-actions button:hover,
-.actions button:hover,
-.trigger-buttons button:hover:not(:disabled),
-.meditation-box button:hover {
-  background-color: #a2543a;
-}
-
-.trigger-buttons button:active,
-.actions button:active,
-.top-actions button:active {
-  transform: scale(0.98);
-}
-
-/* Bouton « J'ai craqué » : toujours distinct, mais moins alarmant */
-.trigger-buttons button[style] {
-  background-color: #b3543f !important;
-}
-
-/* Champs */
-.config-box input[type="number"],
-.config-box input[type="text"],
-.config-box input[type="date"],
-.admin-panel input[type="text"] {
-  border: 1px solid #e0d3c6;
-  background-color: #fffdf9;
-  border-radius: 10px;
-}
-
-.config-box input:focus,
-.admin-panel input:focus {
-  border-color: #b96a4b;
-  box-shadow: 0 0 0 3px rgba(185, 106, 75, 0.15);
-}
-
-/* Sections */
-.dashboard {
-  background-color: #f3e7db;
-  border: 1px solid #e6dbcf;
-  box-shadow: none;
-}
-
-.meditation-box {
-  background-color: #f7ede2;
-  border: 1px solid #e6dbcf;
-  box-shadow: none;
-}
-
-.meditation-box .circle {
-  background-color: #b96a4b;
-  opacity: 0.35;
-}
-
-.missions-box {
-  background-color: #eef3e8;
-  border: 1px solid #dbe3d4;
-  box-shadow: none;
-}
-
-.trigger-response {
-  background-color: #f7ede2;
-  border: 1px solid #e6dbcf;
-}
-
-/* Tableau */
-.daily-stats th {
-  background-color: #7f9b7a;
-}
-
-.daily-stats th,
-.daily-stats td {
-  border-color: #e6dbcf;
-}
-
-.daily-stats tbody tr:nth-child(even) {
-  background-color: #fbf7f1;
-}
-
-/* Export et partage */
-.export-header button,
-.share-button {
-  background-color: #7f9b7a;
-  border-radius: 999px;
-}
-
-.export-header button:hover,
-.share-button:hover {
-  background-color: #6b8467;
-}
-
-/* Panneau admin */
-.admin-panel {
-  background-color: #f8eede;
-  border: 1px solid #e6dbcf;
-  box-shadow: none;
-}
-
-/* Thème sombre : mêmes principes, sans casser l'existant */
-.dark body {
-  background-color: #171412;
-  color: #f3ede6;
-}
-
-.dark .container,
-.dark .config-box {
-  background-color: #221e1a;
-  border-color: #3b332c;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
-}
-
-.dark h1,
-.dark h2,
-.dark h3 {
-  color: #f3ede6;
-}
-
-.dark .top-actions button,
-.dark .actions button,
-.dark .trigger-buttons button,
-.dark .meditation-box button {
-  background-color: #b96a4b;
-}
-
-.dark .top-actions button:hover,
-.dark .actions button:hover,
-.dark .trigger-buttons button:hover:not(:disabled),
-.dark .meditation-box button:hover {
-  background-color: #a2543a;
-}
-
-.dark .dashboard {
-  background-color: #2a241f;
-  border-color: #3b332c;
-}
-
-.dark .meditation-box {
-  background-color: #2a241f;
-  border-color: #3b332c;
-}
-
-.dark .missions-box {
-  background-color: #252b22;
-  border-color: #37402f;
-}
-
-.dark .daily-stats th {
-  background-color: #7f9b7a;
-}
-
-.dark .daily-stats tbody tr:nth-child(even) {
-  background-color: #262220;
-}
-
-.dark .admin-panel {
-  background-color: #2b251d;
-  border-color: #3b332c;
 }
