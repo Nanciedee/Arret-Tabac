@@ -560,3 +560,191 @@ header {
     font-size: 1rem;
   }
 }
+/* === Refonte visuelle douce — sans changement structurel === */
+
+body {
+  font-family: "DM Sans", system-ui, Arial, sans-serif;
+  background-color: #f7f2ec;
+  color: #33302b;
+}
+
+.container,
+.config-box {
+  background-color: #fffdf9;
+  border: 1px solid #e6dbcf;
+  box-shadow: 0 6px 18px rgba(51, 48, 43, 0.07);
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Fraunces", Georgia, serif;
+  color: #33302b;
+}
+
+/* Boutons principaux */
+.top-actions button,
+.actions button,
+.trigger-buttons button,
+.meditation-box button {
+  background-color: #b96a4b;
+  border-radius: 999px;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.top-actions button:hover,
+.actions button:hover,
+.trigger-buttons button:hover:not(:disabled),
+.meditation-box button:hover {
+  background-color: #a2543a;
+}
+
+.trigger-buttons button:active,
+.actions button:active,
+.top-actions button:active {
+  transform: scale(0.98);
+}
+
+/* Bouton « J'ai craqué » : toujours distinct, mais moins alarmant */
+.trigger-buttons button[style] {
+  background-color: #b3543f !important;
+}
+
+/* Champs */
+.config-box input[type="number"],
+.config-box input[type="text"],
+.config-box input[type="date"],
+.admin-panel input[type="text"] {
+  border: 1px solid #e0d3c6;
+  background-color: #fffdf9;
+  border-radius: 10px;
+}
+
+.config-box input:focus,
+.admin-panel input:focus {
+  border-color: #b96a4b;
+  box-shadow: 0 0 0 3px rgba(185, 106, 75, 0.15);
+}
+
+/* Sections */
+.dashboard {
+  background-color: #f3e7db;
+  border: 1px solid #e6dbcf;
+  box-shadow: none;
+}
+
+.meditation-box {
+  background-color: #f7ede2;
+  border: 1px solid #e6dbcf;
+  box-shadow: none;
+}
+
+.meditation-box .circle {
+  background-color: #b96a4b;
+  opacity: 0.35;
+}
+
+.missions-box {
+  background-color: #eef3e8;
+  border: 1px solid #dbe3d4;
+  box-shadow: none;
+}
+
+.trigger-response {
+  background-color: #f7ede2;
+  border: 1px solid #e6dbcf;
+}
+
+/* Tableau */
+.daily-stats th {
+  background-color: #7f9b7a;
+}
+
+.daily-stats th,
+.daily-stats td {
+  border-color: #e6dbcf;
+}
+
+.daily-stats tbody tr:nth-child(even) {
+  background-color: #fbf7f1;
+}
+
+/* Export et partage */
+.export-header button,
+.share-button {
+  background-color: #7f9b7a;
+  border-radius: 999px;
+}
+
+.export-header button:hover,
+.share-button:hover {
+  background-color: #6b8467;
+}
+
+/* Panneau admin */
+.admin-panel {
+  background-color: #f8eede;
+  border: 1px solid #e6dbcf;
+  box-shadow: none;
+}
+
+/* Thème sombre : mêmes principes, sans casser l'existant */
+.dark body {
+  background-color: #171412;
+  color: #f3ede6;
+}
+
+.dark .container,
+.dark .config-box {
+  background-color: #221e1a;
+  border-color: #3b332c;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.dark h1,
+.dark h2,
+.dark h3 {
+  color: #f3ede6;
+}
+
+.dark .top-actions button,
+.dark .actions button,
+.dark .trigger-buttons button,
+.dark .meditation-box button {
+  background-color: #b96a4b;
+}
+
+.dark .top-actions button:hover,
+.dark .actions button:hover,
+.dark .trigger-buttons button:hover:not(:disabled),
+.dark .meditation-box button:hover {
+  background-color: #a2543a;
+}
+
+.dark .dashboard {
+  background-color: #2a241f;
+  border-color: #3b332c;
+}
+
+.dark .meditation-box {
+  background-color: #2a241f;
+  border-color: #3b332c;
+}
+
+.dark .missions-box {
+  background-color: #252b22;
+  border-color: #37402f;
+}
+
+.dark .daily-stats th {
+  background-color: #7f9b7a;
+}
+
+.dark .daily-stats tbody tr:nth-child(even) {
+  background-color: #262220;
+}
+
+.dark .admin-panel {
+  background-color: #2b251d;
+  border-color: #3b332c;
+}
