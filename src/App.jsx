@@ -402,7 +402,7 @@ const formatMs = (ms) => {
           <h2>Déclencheurs</h2>
           <button
             onClick={() => handleSmoke('craquage')}
-            style={{ backgroundColor: '#dc3545', marginBottom: '12px', fontWeight: 'bold' }}
+            style={{ backgroundColor: '#b3543f', marginBottom: '12px', fontWeight: 'bold' }}
           >
             ❗ J’ai craqué ({craquagesToday})
           </button>
